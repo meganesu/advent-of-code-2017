@@ -16,9 +16,9 @@ While this is very space-efficient (no squares are skipped), requested data must
 
 For example:
 
-Data from square 1 is carried 0 steps, since it's at the access port.
-Data from square 12 is carried 3 steps, such as: down, left, left.
-Data from square 23 is carried only 2 steps: up twice.
-Data from square 1024 must be carried 31 steps.
+* Data from square 1 is carried 0 steps, since it's at the access port.
+* Data from square 12 is carried 3 steps, such as: down, left, left.
+* Data from square 23 is carried only 2 steps: up twice.
+* Data from square 1024 must be carried 31 steps.
 
 How many steps are required to carry the data from the square identified in your puzzle input all the way to the access port?
