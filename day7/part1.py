@@ -3,6 +3,21 @@ input = f.readlines()
 
 # Build data structure for program
 #  name, weight, heldBy
+class Program:
+  def __init__(self, name):
+    self.name = name
+    self.weight = -1
+    self.children = []
+    self.parent = None
+
+  def setWeight(self, weight):
+    self.weight = weight
+
+  def addChild(self, child):
+    self.children.append(child)
+
+  def setParent(self, parent):
+    self.parent = parent
 
 programs = {} # key: name of program; val: (weight, heldBy)
 
@@ -14,38 +29,43 @@ for line in input:
   #  pName (pWeight)
   #  pName (pWeight) -> holdingName [, holdingName2] ...
 
-  # Get name of program
+  # Build a program object as the line is parsed
   pName = words[0] # Name of program
+  p = Program(words[0])
 
   # Get weight
   pWeight = int(words[1][1:-1]) # Get the value between the parentheses in words[1]
+  p.setWeight = pWeight
 
-  # Add weight to programs dictionary
+  # If the program is already in programs, copy its parent into the new object
   if pName in programs.keys():
-    programs[pName] = (pWeight, programs[pName][1])
-  else:
-    programs[pName] = (pWeight, '')
+    p.setParent(programs[pName].parent)
 
   # Get names of programs this program is holding
   if '->' in words:
-    pHolding = [] # A list of the names of programs being held by this program
+    pChildren = [] # A list of the names of programs being held by this program
 
     for i in range(3, len(words)):
-      pHolding.append(words[i].strip(','))
+      child = words[i].strip(',')
+      pChildren.append(child)
+      p.addChild(child)
 
     # For each program this program is holding, update its val in programs
-    for p in pHolding:
-      # If holding is in programs, use the weight already stored
-      if p in programs.keys():
-        programs[p] = (programs[p][0], pName)
-      # Else, add holding to programs, with a dummy weight (-1)
+    for c in pChildren:
+      # If child is in programs, use the weight already stored
+      if c in programs.keys():
+        programs[c].setParent(pName)
+      # Else, add child to programs, with a dummy weight (-1)
       else:
-        programs[p] = (-1, pName)
+        newProgram = Program(c)
+        newProgram.setParent(pName)
+        programs[c] = newProgram
 
-print(programs)
+  programs[pName] = p
 
 # Find the bottom program by tracing through heldBy
 #  until someone isn't held by anyone
 for k in programs.keys():
-  if programs[k][1] == '':
+  #print(k, programs[k].weight, programs[k].parent, programs[k].children)
+  if programs[k].parent == None:
     print(k)
